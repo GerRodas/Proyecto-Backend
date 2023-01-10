@@ -2,9 +2,10 @@ import express from 'express';
 import handlebars from 'express-handlebars';
 import __dirname from '../src/utils.js';
 import viewsRouter from './routes/views.router.js'
-import productsRouter from './routes/products.router.js';
+import productsRouter from './routes/products.dao.router.js';
 import cartsRouter from './routes/carts.router.js';
 import {Server} from 'socket.io';
+import mongoose from 'mongoose';
 
 const app = express();
 
@@ -36,3 +37,11 @@ io.on('connection', (socket)=>{
 
     })
 
+const dataBaseOnLine = 'mongodb+srv://german:1122334455@ecommerce.nvhqyay.mongodb.net/?retryWrites=true&w=majority'
+mongoose.connect(dataBaseOnLine, (error)=>{
+    if(error){
+        console.log("No se pude conectar a la BD"+ error);
+        process.exit()
+    }
+    console.log("Conectado a la BD");
+})

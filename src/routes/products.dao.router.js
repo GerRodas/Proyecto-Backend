@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { ProductManager } from "../dao/Managers/ProductManager.js";
+
+import { productModel } from "../dao/models/products.model.js";
 
 
-const manager = new ProductManager('./db/productos.json');
 const router = Router();
 
 router.get('/', async (req,res)=>{
@@ -10,7 +10,7 @@ router.get('/', async (req,res)=>{
     try {
         const { limit } = req.query
     
-        const allProducts = await manager.getproducts();
+        const allProducts = await productModel.find();
     
         if(!limit || limit <1 ){
             return res.send({success: true, products: allProducts});
@@ -37,7 +37,7 @@ router.get('/:id', async (req,res)=>{
         if(Number.isNaN(id) || id < 0) {
             return res.send({success: false, error: "El Id debe ser un valor válido"})
         }
-        const product = await manager.getProductById(id);
+        const product = await productModel.findById(id);
 
         if(!product.id){
             return res.send({success: false, error: "El producto no fue encontrado"})
@@ -62,7 +62,7 @@ router.post("/", async (req, res) => {
 
         }
 
-        const savedProduct = await manager.addProduct({
+        const savedProduct = await productModel.create({
             title,
             description,
             thumbnail,
@@ -95,7 +95,7 @@ router.put('/:id', async(req,res) =>{
 
         const {title, description, thumbnail, price, code, stock} = req.body
 
-        const updateProduct = await manager.updateProduct(id, {
+        const updateProduct = await productModel.updateOne(id, {
             title,
             description,
             thumbnail,
@@ -126,7 +126,7 @@ router.delete('/:id', async(req, res)=>{
             return res.send({success: false, error: "El Id debe ser un valor válido"})
         };
 
-        const deletedProduct = await manager.deleteProduct(id)
+        const deletedProduct = await productModel.deleteOne(id)
 
         res.send({success: true, deleted: deletedProduct})
 
