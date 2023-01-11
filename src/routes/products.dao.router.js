@@ -117,8 +117,8 @@ router.put('/:id', async(req,res) =>{
 
 router.delete('/:id', async(req, res)=>{
     try {
-        const { id: paramId } = req.params;
-        const id = String(paramId);
+        //const { id: paramId } = req.params;
+        const id = req.params;
 
        
 
