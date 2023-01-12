@@ -7,6 +7,7 @@ import cartsdaoRouter from './routes/carts.dao.router.js';
 import usersdaoRouter from './routes/users.dao.router.js';
 import {Server} from 'socket.io';
 import mongoose from 'mongoose';
+import { messagesModel } from './dao/models/messages.model.js';
 
 const app = express();
 
@@ -35,7 +36,11 @@ const io = new Server(httpServer);
 io.on('connection', (socket)=>{
     console.log(`Nuevo cliente conectado en socket id:${socket.id}`)
     
-    io.sockets.emit()
+    socket.on('message', data=>{
+        console.log(data);
+        messages.push(data);
+        io.emit('messageLogs', messages)
+    })
 
     })
 
