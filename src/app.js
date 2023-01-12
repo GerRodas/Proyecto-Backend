@@ -3,7 +3,7 @@ import handlebars from 'express-handlebars';
 import __dirname from '../src/utils.js';
 import viewsRouter from './routes/views.router.js'
 import productsdaoRouter from './routes/products.dao.router.js';
-import cartsRouter from './routes/carts.router.js';
+import cartsdaoRouter from './routes/carts.dao.router.js';
 import usersdaoRouter from './routes/users.dao.router.js';
 import {Server} from 'socket.io';
 import mongoose from 'mongoose';
@@ -25,7 +25,7 @@ app.use(express.static(__dirname+'/public'));
 app.use('/',viewsRouter);
 
 app.use('/api/products', productsdaoRouter);
-app.use('/api/carts', cartsRouter);
+app.use('/api/carts', cartsdaoRouter);
 app.use('/api/users', usersdaoRouter)
 
 const httpServer = app.listen(8080, () => console.log("Servidor corriendo en el puerto 8080"));

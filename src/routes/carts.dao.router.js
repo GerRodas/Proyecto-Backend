@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { cartModel } from "../dao/models/carts.model";
+import { cartModel } from "../dao/models/carts.model.js";
 
 const router = Router();
 
@@ -18,10 +18,11 @@ router.get('/:id', async (req,res)=>{
 });
 
 router.post('/', async (req,res)=>{
-    const cart = await cartModel.create()
-    carts.push(cart)
+    const cart = req.body
+    const SavedCart = await cartModel.create(cart)
+    
 
-    res.json({status: "success", cart})
+    res.json({status: "success", SavedCart})
 
 });
 
@@ -29,7 +30,7 @@ router.post('/:cid/product/:pid', async (req,res)=>{
     const cartID = parseInt(req.params.cid)
     const productID = parseInt(req.params.pid)
     
-    const cart = await cartModel.createCollection(cartID, productID)
+    const cart = await cartModel.insertOne(cartID, productID)
 
     res.json({status: "success", cart})
 
