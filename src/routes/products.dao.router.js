@@ -30,11 +30,8 @@ router.get('/:id', async (req,res)=>{
 
     try {
         const { id: paramId } = req.params;
-        const id = Number(paramId)
-
-        if(Number.isNaN(id) || id < 0) {
-            return res.send({success: false, error: "El Id debe ser un valor válido"})
-        }
+        const id = String(paramId)
+        
         const product = await productModel.findById(id);
 
         if(!product.id){
