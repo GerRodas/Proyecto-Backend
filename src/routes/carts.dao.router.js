@@ -11,10 +11,17 @@ router.get('/', async (req,res)=>{
 });
 
 router.get('/:id', async (req,res)=>{
-    const id = parseInt(req.params.id)
-    const cart = await cartModel.findOne(id);
 
-    res.json({cart})
+    try {
+        const id = parseInt(req.params.id)
+        const cart = await cartModel.findOne(id);
+    
+        res.json({success: true, result: cart})
+        
+    } catch (error) {
+        res.send({success: false, result: error})
+
+    }
 });
 
 router.post('/', async (req,res)=>{
@@ -27,12 +34,17 @@ router.post('/', async (req,res)=>{
 });
 
 router.post('/:cid/product/:pid', async (req,res)=>{
-    const cartID = parseInt(req.params.cid)
-    const productID = parseInt(req.params.pid)
+    try {
+        const cartID = parseInt(req.params.cid)
+        const productID = parseInt(req.params.pid)
+        
+        const cart = await cartModel.insertOne(cartID, productID)
     
-    const cart = await cartModel.insertOne(cartID, productID)
-
-    res.json({status: "success", cart})
+        res.json({success: true, cart})
+        
+    } catch (error) {
+        res.json({success: false, error})
+    }
 
 });
 

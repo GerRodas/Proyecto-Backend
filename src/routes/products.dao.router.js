@@ -82,9 +82,9 @@ router.post("/", async (req, res) => {
 router.put('/:id', async(req,res) =>{
     try {
         const { id: paramId } = req.params;
-        const id = Number(paramId);
+        const id = String(paramId);
 
-        if(Number.isNaN(id) || id < 0) {
+        if(!id) {
             return res.send({success: false, error: "El Id debe ser un valor válido"})
         };
 
