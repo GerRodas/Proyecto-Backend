@@ -1,5 +1,12 @@
 <div>
     <h1 class="title">Lista de productos</h1>
+    <a href="/crear">Crear producto</a>
+
+    <form action="/products">
+    Buscar: <input type="text" name="query" value="{{query}}">
+    <input type="submit" value="Buscar">
+    
+    </form>
     
     <table class="product-list">
         <tr>
@@ -9,8 +16,8 @@
             <th>Miniatura</th>
             <th>Stock</th>
         </tr>
-        {{#if products.length}}
-        {{#each products}}
+       
+        {{#each result.docs}}
         <tr>
             <td>{{this.title}}</td>
             <td>{{this.description}}</td>
@@ -19,7 +26,7 @@
             <td>{{this.stock}}</td>
         </tr>
         {{/each}}
-        {{/if}}
+       
     </table>
 
 </div>

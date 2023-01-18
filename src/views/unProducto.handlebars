@@ -1,0 +1,14 @@
+<div>
+    <h1>Producto</h1>
+
+    {{#each result.docs}}
+        <tr>
+            <td>{{this.title}}</td>
+            <td>{{this.description}}</td>
+            <td>{{this.price}}</td>
+            <td><img height="72px" width="72px" src={{this.thumbnail}} /></td>
+            <td>{{this.stock}}</td>
+        </tr>
+        {{/each}}
+
+</div>

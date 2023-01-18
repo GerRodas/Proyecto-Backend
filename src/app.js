@@ -8,11 +8,12 @@ import usersdaoRouter from './routes/users.dao.router.js';
 import {Server} from 'socket.io';
 import mongoose from 'mongoose';
 import { messagesModel } from './dao/models/messages.model.js';
+import bodyParser from 'body-parser';
 
 const app = express();
 
-app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: true}));
 
 
 app.engine('handlebars', handlebars.engine());
@@ -25,9 +26,9 @@ app.use(express.static(__dirname+'/public'));
 
 app.use('/',viewsRouter);
 
-app.use('/api/products', productsdaoRouter);
-app.use('/api/carts', cartsdaoRouter);
-app.use('/api/users', usersdaoRouter)
+app.use('/products', productsdaoRouter);
+app.use('/carts', cartsdaoRouter);
+app.use('/users', usersdaoRouter)
 
 const httpServer = app.listen(8080, () => console.log("Servidor corriendo en el puerto 8080"));
 

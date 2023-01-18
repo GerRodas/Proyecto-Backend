@@ -12,6 +12,14 @@ router.get('/', async(req,res)=>{
     res.render('index',{products});
 });
 
+router.get('/crear', async (req, res) => {
+    res.render('crear', {})
+});
+
+router.get('/unproducto', async (req, res) => {
+    res.render('unProducto', {})
+})
+
 router.get("/realtimeproducts", (req,res)=>{
     res.render("realTimeProducts")
 });

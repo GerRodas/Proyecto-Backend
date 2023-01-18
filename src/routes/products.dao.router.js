@@ -1,4 +1,5 @@
 import { Router } from "express";
+import mongoose from "mongoose";
 import { productModel } from "../dao/models/products.model.js";
 
 const router = Router();
@@ -6,35 +7,42 @@ const router = Router();
 router.get('/', async (req,res)=>{
     
     try {
-        const { limit } = req.query
-    
-        const allProducts = await productModel.find();
-    
-        if(!limit || limit <1 ){
-            return res.send({success: true, products: allProducts});
+        const limit = req.query?.limit || 10
+        const page = req.query?.page || 1
+
+        const filter = req.query?.query || req.body?.query || ""
+
+        const search = {}
+        if (filter) {
+            search ["$or"] = [
+                {title: {$regex: filter}},
+                {description: {$regex: filter}}
+            ]
         }
+
+        const options = {page, limit, lean: true}
     
-        const products = allProducts.slice(0, limit);
+        const result = await productModel.paginate(search, options);
+       
     
-        return res.send({success: true, products});
+        res.render('index',{result, query: filter});
     
         } catch (error) {
             console.log(error)
     
-            res.send({success: false, error: "Se ha producido un error"});
+            res.render({success: false, error: "Se ha producido un error"});
         }
 
 });
-
-router.get('/:id', async (req,res)=>{
+/*
+router.get('/:producto', async (req,res)=>{
 
     try {
-        const { id: paramId } = req.params;
-        const id = String(paramId)
+        const producto = req.params.producto;
         
-        const product = await productModel.findById(id);
+        const product = await productModel.findById({title: producto}).lean().exec();
 
-        if(!product.id){
+        if(!product){
             return res.send({success: false, error: "El producto no fue encontrado"})
         }
 
@@ -43,38 +51,25 @@ router.get('/:id', async (req,res)=>{
     } catch (error) {
         console.log(error)
 
-        res.send({success: false, error: "Ha ocurrido un error"});
+        res.send({success: false, error: "Ha ocurrido un errorrrr"});
     }
 
-});
+});*/
 
-router.post("/", async (req, res) => {
+router.post("/crear", async (req, res) => {
     try {
-        const {title, description, thumbnail, price, code, stock, category, status} = req.body
+        const productNew = req.body
 
-        if(!title || !description || !price || !code || !stock || !status ||!category){
-            return res.send({success: false, error: "Las variables son obligatorias"});
+        const savedProduct = new productModel(productNew);
+        await savedProduct.save();
 
-        }
-
-        const savedProduct = await productModel.create({
-            title,
-            description,
-            thumbnail,
-            price,
-            code,
-            stock,
-            category,
-            status: true,
-        });
-
-        res.send({success: true, product: savedProduct})
+        res.redirect('index' + savedProduct.title)
 
     } catch (error) {
         console.log(error);
 
         
-        res.send({success: false, error: "Ha ocurrido un error"});
+        res.render({success: false, error: "Alguito que pasó" + error});
     }
 }
 );
@@ -112,16 +107,16 @@ router.put('/:id', async(req,res) =>{
     }
 });
 
-router.delete('/:id', async(req, res)=>{
+router.get('/delete/:id', async(req, res)=>{
     try {
         //const { id: paramId } = req.params;
-        const id = req.params;
+        const id = new mongoose.Types.ObjectId(req.params.id);
 
-       
+        const deleted = await productModel.deleteOne({_id:id})
 
         const deletedProduct = await productModel.deleteOne(id)
 
-        res.send({success: true, deleted: deletedProduct})
+        res.redirect('/index')
 
 
     } catch (error) {
