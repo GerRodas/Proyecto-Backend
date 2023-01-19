@@ -63,7 +63,7 @@ router.post("/crear", async (req, res) => {
         const savedProduct = new productModel(productNew);
         await savedProduct.save();
 
-        res.redirect('index' + savedProduct.title)
+        res.redirect('unProducto', {savedProduct: savedProduct})
 
     } catch (error) {
         console.log(error);

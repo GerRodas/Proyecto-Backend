@@ -16,6 +16,10 @@ router.get('/crear', async (req, res) => {
     res.render('crear', {})
 });
 
+router.post('/crear', async (req, res) => {
+    res.render('crear', {})
+});
+
 router.get('/unproducto', async (req, res) => {
     res.render('unProducto', {})
 })
