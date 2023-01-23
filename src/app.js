@@ -9,6 +9,9 @@ import {Server} from 'socket.io';
 import mongoose from 'mongoose';
 import { messagesModel } from './dao/models/messages.model.js';
 import bodyParser from 'body-parser';
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import  FileStore  from 'session-file-store';
 
 const app = express();
 
@@ -53,3 +56,34 @@ mongoose.connect(dataBaseOnLine, (error)=>{
     }
     console.log("Conectado a la BD");
 })
+
+app.use(cookieParser());
+
+app.get('/setcookie', (req,res)=>{
+    res.cookie('cookie', 'Bienvenido a la cookie de Papina').send('cookie seteada')
+});
+
+
+app.use(session({
+    secret: '123456',
+    resave: true,
+    saveUninitialized: true
+}))
+
+function auth(req,res,next){
+    if(req.session?.user) return next()
+
+    return res.status(401).send('Auth error')
+}
+
+app.get('/login', (req,res)=>{
+    const { username } = req.query
+
+    req.session.user = username
+    res.send('Login success')
+})
+
+app.get('/logout', (req,res)=>{
+    req.session.destroy(error =res.send(error))
+})
+app.get('/private', auth, (req,res)=> res.send('Private Page'))
