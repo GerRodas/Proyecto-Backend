@@ -5,6 +5,7 @@ import viewsRouter from './routes/views.router.js'
 import productsdaoRouter from './routes/products.dao.router.js';
 import cartsdaoRouter from './routes/carts.dao.router.js';
 import usersdaoRouter from './routes/users.dao.router.js';
+import sessionRouter from './routes/sessions.dao.router.js'
 import {Server} from 'socket.io';
 import mongoose from 'mongoose';
 import { messagesModel } from './dao/models/messages.model.js';
@@ -12,6 +13,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import  FileStore  from 'session-file-store';
+import MongoStore from 'connect-mongo';
 
 const app = express();
 
@@ -29,9 +31,10 @@ app.use(express.static(__dirname+'/public'));
 
 app.use('/',viewsRouter);
 
-app.use('/products', productsdaoRouter);
+app.use('/products', auth, productsdaoRouter);
 app.use('/carts', cartsdaoRouter);
-app.use('/users', usersdaoRouter)
+app.use('/users', usersdaoRouter);
+app.use('/login', sessionRouter);
 
 const httpServer = app.listen(8080, () => console.log("Servidor corriendo en el puerto 8080"));
 
@@ -65,6 +68,15 @@ app.get('/setcookie', (req,res)=>{
 
 
 app.use(session({
+    store: MongoStore.create({
+        mongoUrl: dataBaseOnLine,
+        dbName: 'sessions',
+        mongoOptions: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        },
+        ttl: 15
+    }),
     secret: '123456',
     resave: true,
     saveUninitialized: true
@@ -73,7 +85,7 @@ app.use(session({
 function auth(req,res,next){
     if(req.session?.user) return next()
 
-    return res.status(401).send('Auth error')
+    return res.status(401).send('Error de autorización')
 }
 
 app.get('/login', (req,res)=>{
