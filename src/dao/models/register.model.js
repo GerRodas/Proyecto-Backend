@@ -11,5 +11,5 @@ const registerSchema = new mongoose.Schema({
     password: String,
     
 })
-productSchema.plugin(mongoosePaginate);
+registerSchema.plugin(mongoosePaginate);
 export const registerModel = mongoose.model(registerCollection, registerSchema)
