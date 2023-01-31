@@ -38,7 +38,7 @@ router.get("/carts", async (req,res)=>{
     const chat = await cartModel.find().lean()
     res.render("carts",{})
 });
-
+/*
 router.get('/registrar', async (req, res) => {
     res.render('registrar', {})
 });
@@ -53,6 +53,6 @@ router.get('/registrar', async (req, res) => {
 
     req.session.user = user
     res.render('index', {})
-});
+});*/
 
 export default router;

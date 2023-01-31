@@ -5,7 +5,7 @@ import viewsRouter from './routes/views.router.js'
 import productsdaoRouter from './routes/products.dao.router.js';
 import cartsdaoRouter from './routes/carts.dao.router.js';
 import usersdaoRouter from './routes/users.dao.router.js';
-import sessionRouter from './routes/sessions.dao.router.js'
+import sessionRouter from './routes/sessions.dao.router.js';
 import {Server} from 'socket.io';
 import mongoose from 'mongoose';
 import { messagesModel } from './dao/models/messages.model.js';
@@ -34,7 +34,7 @@ app.use('/',viewsRouter);
 app.use('/products', auth, productsdaoRouter);
 app.use('/carts', cartsdaoRouter);
 app.use('/users', usersdaoRouter);
-app.use('/login', sessionRouter);
+app.use('/logearse', sessionRouter);
 
 const httpServer = app.listen(8080, () => console.log("Servidor corriendo en el puerto 8080"));
 
@@ -83,11 +83,16 @@ app.use(session({
 }))
 
 function auth(req,res,next){
-    if(req.session?.user) return next()
+    try {
+        if(req.session?.user) return next()
+        
+    } catch (error) {
+        return res.status(401).render('errors/base', {error: "No autenticado"})
+        
+    }
 
-    return res.status(401).send('Error de autorización')
 }
-
+/*
 app.get('/login', (req,res)=>{
     const { username } = req.query
 
@@ -99,3 +104,4 @@ app.get('/logout', (req,res)=>{
     req.session.destroy(error =res.send(error))
 })
 app.get('/private', auth, (req,res)=> res.send('Private Page'))
+*/

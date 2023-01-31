@@ -3,6 +3,8 @@ import mongoose from "mongoose";
 import { productModel } from "../dao/models/products.model.js";
 import { registerModel } from "../dao/models/register.model.js";
 import { usersModel } from "../dao/models/user.model.js";
+import { Session } from "express-session";
+
 
 const router = Router();
 
@@ -15,10 +17,10 @@ router.post("/register", async (req, res) => {
     try {
         const userNew = req.body
 
-        const user = new usersModel(userNew);
+        const user = new registerModel(userNew);
         await user.save();
 
-        res.redirect('/', {newUser: user})
+        res.redirect('login')
 
     } catch (error) {
         console.log(error);
@@ -35,13 +37,13 @@ router.get('/login',async(req,res)=>{
 
 router.post('/login',async(req,res)=>{
     const {email , password} = req.body
-    const user = await registerModel.findOne(email, password).lean().exec()
+    const user = await registerModel.findOne({email, password}).lean().exec()
     if(!user){
-        res.status(401).render('errors/error', {error: 'Error en el email o password'})
+        res.status(401).render('errors/base', {error: 'Error en el email o password'})
     }
-    req.session.user = user
+    req.session.user = user //No funciona el user, ni idea porque
 
-    res.redirect('/')
+    res.redirect('/products')
 })
 
 export default router;
