@@ -4,6 +4,7 @@ import { productModel } from "../dao/models/products.model.js";
 import { registerModel } from "../dao/models/register.model.js";
 import { usersModel } from "../dao/models/user.model.js";
 import { Session } from "express-session";
+import { createHash, isValidPassword } from "../utils.js";
 
 
 const router = Router();
@@ -16,6 +17,7 @@ router.get('/register', async (req,res)=>{
 router.post("/register", async (req, res) => {
     try {
         const userNew = req.body
+        userNew.password = createHash(userNew.password)
 
         const user = new registerModel(userNew);
         await user.save();
@@ -41,6 +43,10 @@ router.post('/login',async(req,res)=>{
     if(!user){
         res.status(401).render('errors/base', {error: 'Error en el email o password'})
     }
+    if (!isValidPassword(user,password)){
+        return res.status(403).send('Password incorrecto')
+    }
+    console.log({'elemento que recibo': user});
     req.session.user = user //No funciona el user, ni idea porque
 
     res.redirect('/products')

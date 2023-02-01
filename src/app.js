@@ -77,19 +77,16 @@ app.use(session({
         },
         ttl: 15
     }),
-    secret: '123456',
+    secret: '1122334455',
     resave: true,
     saveUninitialized: true
 }))
 
 function auth(req,res,next){
-    try {
-        if(req.session?.user) return next()
-        
-    } catch (error) {
-        return res.status(401).render('errors/base', {error: "No autenticado"})
-        
-    }
+    
+    if(req.session?.user) return next() 
+    return res.status(401).render('errors/base', {error: "No autenticado"})     
+    
 
 }
 /*
