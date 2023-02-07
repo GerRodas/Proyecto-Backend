@@ -40,6 +40,7 @@ router.get('/login',async(req,res)=>{
 router.post('/login',async(req,res)=>{
     const {email , password} = req.body
     const user = await registerModel.findOne({email, password}).lean().exec()
+    console.log(user);
     if(!user){
         res.status(401).render('errors/base', {error: 'Error en el email o password'})
     }
@@ -47,7 +48,7 @@ router.post('/login',async(req,res)=>{
         return res.status(403).send('Password incorrecto')
     }
     console.log({'elemento que recibo': user});
-    req.session.user = user //No funciona el user, ni idea porque
+    user = req.session.user //No funciona el user, ni idea porque
 
     res.redirect('/products')
 })
