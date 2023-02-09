@@ -48,9 +48,17 @@ router.post('/login',async(req,res)=>{
         return res.status(403).send('Password incorrecto')
     }
     console.log({'elemento que recibo': user});
-    user = req.session.user //No funciona el user, ni idea porque
+    req.session.user = user //No funciona el user, ni idea porque
 
     res.redirect('/products')
+})
+
+router.get('/logout',async(req,res)=>{
+    req.session.destroy(err =>{
+        if(err) return res.status(500).render('errors/base', {error: err})
+
+        res.redirect('login')
+    })
 })
 
 export default router;
