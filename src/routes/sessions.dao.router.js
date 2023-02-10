@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { productModel } from "../dao/models/products.model.js";
 import { registerModel } from "../dao/models/register.model.js";
 import { usersModel } from "../dao/models/user.model.js";
-import { Session } from "express-session";
+import session from "express-session";
 import { createHash, isValidPassword } from "../utils.js";
 
 
@@ -39,16 +39,17 @@ router.get('/login',async(req,res)=>{
 
 router.post('/login',async(req,res)=>{
     const {email , password} = req.body
-    const user = await registerModel.findOne({email, password}).lean().exec()
-    console.log(user);
-    if(!user){
-        res.status(401).render('errors/base', {error: 'Error en el email o password'})
+    
+    const userDB = await registerModel.findOne({email}).lean().exec()
+    
+    if(!userDB || null){
+        res.status(401).render('errors/base', {error: 'Error en el email. No hay usuario'})
     }
-    if (!isValidPassword(user,password)){
+    if (!isValidPassword(userDB,password)){
         return res.status(403).send('Password incorrecto')
     }
-    console.log({'elemento que recibo': user});
-    req.session.user = user //No funciona el user, ni idea porque
+    console.log({'elemento que recibo': userDB});
+    req.session.user = userDB //No funciona el user, ni idea porque
 
     res.redirect('/products')
 })

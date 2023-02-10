@@ -15,6 +15,7 @@ import session from 'express-session';
 import  FileStore  from 'session-file-store';
 import MongoStore from 'connect-mongo';
 
+
 const app = express();
 
 app.use(bodyParser.json());
@@ -77,7 +78,7 @@ app.use(session({
         },
         ttl: 300
     }),
-    secret: '1122334455',
+    secret: 'milugarsecreto',
     resave: true,
     saveUninitialized: true
 }))
@@ -85,7 +86,7 @@ app.use(session({
 function auth(req,res,next){
     
     if(req.session?.user) return next() 
-    return res.status(401).render('errors/base', {error: "No autenticado"})     
+    return res.status(401).render('errors/base', {Error: "No autenticado"})     
     
 
 }
