@@ -2,9 +2,10 @@ import { Router } from "express";
 import mongoose from "mongoose";
 import { productModel } from "../dao/models/products.model.js";
 import { registerModel } from "../dao/models/register.model.js";
-import { usersModel } from "../dao/models/user.model.js";
+import { userModel } from "../dao/models/user.model.js";
 import session from "express-session";
 import { createHash, isValidPassword } from "../utils.js";
+import passport from "passport";
 
 
 const router = Router();
@@ -14,44 +15,24 @@ router.get('/register', async (req,res)=>{
 
 });
 
-router.post("/register", async (req, res) => {
-    try {
-        const userNew = req.body
-        userNew.password = createHash(userNew.password)
+router.post("/register", passport.authenticate('register',{failureRedirect: '/errors/base'}), (req, res) => {
 
-        const user = new registerModel(userNew);
-        await user.save();
-
-        res.redirect('login')
-
-    } catch (error) {
-        console.log(error);
-
-        
-        res.render({success: false, error: "Alguito que pasó" + error});
-    }
-}
-);
+    res.redirect('/login')
+});
 
 router.get('/login',async(req,res)=>{
     res.render('login')
 })
 
-router.post('/login',async(req,res)=>{
-    const {email , password} = req.body
-    
-    const userDB = await registerModel.findOne({email}).lean().exec()
-    
-    if(!userDB || null){
-        res.status(401).render('errors/base', {error: 'Error en el email. No hay usuario'})
+router.post('/login',passport.authenticate('login',{failureRedirect: '/errors/base'}), (req, res)=>{
+        
+    if(!req.user){
+        return res.status(400).render('errors/base', {error: 'Error en el email. No hay usuario'})
     }
-    if (!isValidPassword(userDB,password)){
-        return res.status(403).send('Password incorrecto')
-    }
-    console.log({'elemento que recibo': userDB});
-    req.session.user = userDB //No funciona el user, ni idea porque
 
-    res.redirect('/products')
+    req.session.user = user //No funciona el user, ni idea porque
+
+    res.redirect('products')
 })
 
 router.get('/logout',async(req,res)=>{

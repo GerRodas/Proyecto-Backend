@@ -1,6 +1,6 @@
 import passport from "passport";
 import local from 'passport-local'
-import { registerModel } from "../dao/models/register.model.js";
+import { userModel } from "../dao/models/user.model.js";
 import { createHash, isValidPassword } from "../utils.js";
 
 const LocalStrategy = local.Strategy
@@ -13,29 +13,48 @@ const initializePassport = () => {
         async (req, username, password, done)=>{
             const {first_name, last_name, email} =req.body
             try {
-                const user = await registerModel.findOne({email: username})
+                const user = await userModel.findOne({email: username})
                     if(user){
                         console.log('El usuario existe')
                         return done(null, false)
                     }
                     const newUser = {
-                        first_name,
-                        last_name,
-                        email,
+                        first_name: req.body.first_name,
+                        last_name: req.body.last_name,
+                        email: req.body.email,
+                        age: req.body.age,
+                        role: 'user',
+                        social: 'local',
                         password: createHash(password)
                     }
-                    const result = await registerModel.create(newUser)
+                    const result = await userModel.create(newUser)
                     return done(null, result)
             } catch (error) {
                 return done("Error al registrar" + error)
             }
         }
     ))
-        passport.serializeUser((user, done) =>{
-            done(null, user._id)
+    passport.use('login', new LocalStrategy({
+        usernameField: 'email'
+    }, async (username, password, done)=>{
+        try {
+            const user = await userModel.findOne({email: username})
+            if(!user){
+                console.log('Usuario no existe')
+                return done(null, user)
+            }
+            if(!isValidPassword(user, password)) return done(null, false)
+        } catch (error) {
+            
+        }
+    }))
+    passport.serializeUser((user, done) =>{
+        done(null, user._id)
         })
-        passport.deserializeUser(async(id, done)=>{
-            const user = await registerModel.findById(_id)
-            done(null, user)
+    passport.deserializeUser(async(id, done)=>{
+        const user = await userModel.findById(_id)
+        done(null, user)
         })
     }
+
+    export default initializePassport

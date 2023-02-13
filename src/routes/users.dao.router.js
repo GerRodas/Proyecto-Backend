@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { usersModel } from "../dao/models/user.model.js";
+import { userModel } from "../dao/models/user.model.js";
 
 const router = Router();
 
 router.get('/', async(req,res)=>{
     try{
-        let users = await usersModel.find()
+        let users = await userModel.find()
         res.send({result:"success", payload: users})
     }
     catch(error){
@@ -22,7 +22,7 @@ router.get('/:id', async (req,res)=>{
         if(Number.isNaN(id) || id < 0) {
             return res.send({success: false, error: "El Id debe ser un valor válido"})
         }
-        const product = await usersModel.findById(id);
+        const product = await userModel.findById(id);
 
         if(!product.id){
             return res.send({success: false, error: "El usuario no fue encontrado"})
@@ -47,7 +47,7 @@ router.post("/", async (req, res) => {
 
         }
 
-        const savedProduct = await usersModel.create({
+        const savedProduct = await userModel.create({
             first_name,
             last_name,
             email,
@@ -76,7 +76,7 @@ router.put('/:id', async(req,res) =>{
 
         const {first_name, last_name, email} = req.body
 
-        const updateProduct = await usersModel.updateOne(id, {
+        const updateProduct = await userModel.updateOne(id, {
             first_name,
             last_name,
             email,
@@ -104,7 +104,7 @@ router.delete('/:id', async(req, res)=>{
             return res.send({success: false, error: "El Id debe ser un valor válido"})
         };
 
-        const deletedProduct = await usersModel.deleteOne(id)
+        const deletedProduct = await userModel.deleteOne(id)
 
         res.send({success: true, deleted: deletedProduct})
 

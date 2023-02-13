@@ -14,6 +14,8 @@ import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import  FileStore  from 'session-file-store';
 import MongoStore from 'connect-mongo';
+import passport from 'passport';
+import initializePassport from './config/passport.config.js';
 
 
 const app = express();
@@ -35,7 +37,7 @@ app.use('/',viewsRouter);
 app.use('/products', auth, productsdaoRouter);
 app.use('/carts', cartsdaoRouter);
 app.use('/users', usersdaoRouter);
-app.use('/logearse', sessionRouter);
+app.use('/session', sessionRouter);
 
 const httpServer = app.listen(8080, () => console.log("Servidor corriendo en el puerto 8080"));
 
@@ -82,6 +84,10 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }))
+
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 function auth(req,res,next){
     
