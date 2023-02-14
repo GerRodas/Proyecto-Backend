@@ -17,7 +17,7 @@ router.get('/register', async (req,res)=>{
 
 router.post("/register", passport.authenticate('register',{failureRedirect: '/errors/base'}), (req, res) => {
 
-    res.redirect('/login')
+    res.redirect('/session/login')
 });
 
 router.get('/login',async(req,res)=>{
@@ -27,12 +27,12 @@ router.get('/login',async(req,res)=>{
 router.post('/login',passport.authenticate('login',{failureRedirect: '/errors/base'}), (req, res)=>{
         
     if(!req.user){
-        return res.status(400).render('errors/base', {error: 'Error en el email. No hay usuario'})
+        return res.status(400).render('/errors/base', {error: 'Error en el email. No hay usuario'})
     }
 
     req.session.user = user //No funciona el user, ni idea porque
 
-    res.redirect('products')
+    res.redirect('/products')
 })
 
 router.get('/logout',async(req,res)=>{
@@ -41,6 +41,10 @@ router.get('/logout',async(req,res)=>{
 
         res.redirect('login')
     })
+})
+
+router.get('/error',async(req,res)=>{
+    return res.status(500).render('errors/base', {error: err})
 })
 
 export default router;

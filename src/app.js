@@ -78,7 +78,7 @@ app.use(session({
             useNewUrlParser: true,
             useUnifiedTopology: true
         },
-        ttl: 300
+        ttl: 3000
     }),
     secret: 'milugarsecreto',
     resave: true,

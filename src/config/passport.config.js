@@ -11,7 +11,6 @@ const initializePassport = () => {
             passReqToCallback: true, usernameField: 'email'
         },
         async (req, username, password, done)=>{
-            const {first_name, last_name, email} =req.body
             try {
                 const user = await userModel.findOne({email: username})
                     if(user){
@@ -38,12 +37,13 @@ const initializePassport = () => {
         usernameField: 'email'
     }, async (username, password, done)=>{
         try {
-            const user = await userModel.findOne({email: username})
+            const user = await userModel.findOne({email: username}).lean().exec()
             if(!user){
                 console.log('Usuario no existe')
                 return done(null, user)
             }
             if(!isValidPassword(user, password)) return done(null, false)
+            return done(null, user)
         } catch (error) {
             
         }
@@ -57,4 +57,4 @@ const initializePassport = () => {
         })
     }
 
-    export default initializePassport
+export default initializePassport
