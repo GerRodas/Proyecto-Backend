@@ -29,7 +29,7 @@ router.post('/login',passport.authenticate('login',{failureRedirect: '/errors/ba
     if(!req.user){
         return res.status(400).render('/errors/base', {error: 'Error en el email. No hay usuario'})
     }
-
+    console.log(req.session.user);
     req.session.user = user //No funciona el user, ni idea porque
 
     res.redirect('/products')
@@ -44,7 +44,7 @@ router.get('/logout',async(req,res)=>{
 })
 
 router.get('/error',async(req,res)=>{
-    return res.status(500).render('errors/base', {error: err})
+    return res.status(500).render('/errors/base', {error: err})
 })
 
 export default router;

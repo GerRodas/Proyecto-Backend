@@ -5,7 +5,7 @@ import viewsRouter from './routes/views.router.js'
 import productsdaoRouter from './routes/products.dao.router.js';
 import cartsdaoRouter from './routes/carts.dao.router.js';
 import usersdaoRouter from './routes/users.dao.router.js';
-import sessionRouter from './routes/sessions.dao.router.js';
+import sessionRouter from './routes/session.router.js';
 import {Server} from 'socket.io';
 import mongoose from 'mongoose';
 import { messagesModel } from './dao/models/messages.model.js';
