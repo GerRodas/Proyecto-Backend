@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import { productModel } from "../dao/models/products.model.js";
 import { registerModel } from "../dao/models/register.model.js";
 import { userModel } from "../dao/models/user.model.js";
-import session from "express-session";
 import { createHash, isValidPassword } from "../utils.js";
 import passport from "passport";
 

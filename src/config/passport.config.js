@@ -40,9 +40,11 @@ const initializePassport = () => {
             const user = await userModel.findOne({email: username}).lean().exec()
             if(!user){
                 console.log('Usuario no existe')
-                return done(null, user)
+                return done(null, false)
             }
-            if(!isValidPassword(user, password)) return done(null, false)
+            if(!isValidPassword(user, password)) {
+                return done(null, false)
+            }
             return done(null, user)
         } catch (error) {
             
