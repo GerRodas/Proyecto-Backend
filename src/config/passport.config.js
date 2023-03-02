@@ -38,6 +38,10 @@ const initializePassport = () => {
     }, async (username, password, done)=>{
         try {
             const user = await userModel.findOne({email: username}).lean().exec()
+            console.log({"lo que es el user":user});
+            console.log({"lo que es el username":username});
+            console.log({"lo que es el password":password});
+            console.log({"lo que es el done":done});
             if(!user){
                 console.log('Usuario no existe')
                 return done(null, false)
@@ -45,9 +49,10 @@ const initializePassport = () => {
             if(!isValidPassword(user, password)) {
                 return done(null, false)
             }
-            return done(null, user)
+            console.log({"lo que es el segundo done":done});
+            return done(null, user);
         } catch (error) {
-            
+            return done(error)
         }
     }))
     passport.serializeUser((user, done) =>{

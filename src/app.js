@@ -5,14 +5,13 @@ import viewsRouter from './routes/views.router.js'
 import productsdaoRouter from './routes/products.dao.router.js';
 import cartsdaoRouter from './routes/carts.dao.router.js';
 import usersdaoRouter from './routes/users.dao.router.js';
-import sessionRouter from './routes/session.router.js';
+import sessionRouter from './routes/sessions.router.js';
 import {Server} from 'socket.io';
 import mongoose from 'mongoose';
 import { messagesModel } from './dao/models/messages.model.js';
 import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
-import  FileStore  from 'session-file-store';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
@@ -69,6 +68,14 @@ app.get('/setcookie', (req,res)=>{
     res.cookie('cookie', 'Bienvenido a la cookie de Papina').send('cookie seteada')
 });
 
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
+
+function auth(req,res,next){    
+    if(req.session?.user) return next() 
+    return res.status(401).render('errors/base', {Error: "No autenticado"})
+}
 
 app.use(session({
     store: MongoStore.create({
@@ -85,27 +92,4 @@ app.use(session({
     saveUninitialized: true
 }))
 
-initializePassport()
-app.use(passport.initialize())
-app.use(passport.session())
 
-function auth(req,res,next){
-    
-    if(req.session?.user) return next() 
-    return res.status(401).render('errors/base', {Error: "No autenticado"})     
-    
-
-}
-/*
-app.get('/login', (req,res)=>{
-    const { username } = req.query
-
-    req.session.user = username
-    res.send('Login success')
-})
-
-app.get('/logout', (req,res)=>{
-    req.session.destroy(error =res.send(error))
-})
-app.get('/private', auth, (req,res)=> res.send('Private Page'))
-*/

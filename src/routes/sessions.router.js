@@ -5,6 +5,7 @@ import { registerModel } from "../dao/models/register.model.js";
 import { userModel } from "../dao/models/user.model.js";
 import { createHash, isValidPassword } from "../utils.js";
 import passport from "passport";
+import session from "express-session";
 
 
 const router = Router();
@@ -29,7 +30,7 @@ router.post('/login',passport.authenticate('login',{failureRedirect: '/errors/ba
         return res.status(400).render('/errors/base', {error: 'Error en el email. No hay usuario'})
     }
     console.log(req.session.user);
-    req.session.user = user //No funciona el user, ni idea porque
+    req.session.user = req.user //No funciona el user, ni idea porque
 
     res.redirect('/products')
 })
