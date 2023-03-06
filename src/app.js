@@ -15,7 +15,7 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
 import initializePassport from './config/passport.config.js';
-
+import jwtRouter from './routes/jwt.router.js';
 
 const app = express();
 
@@ -37,6 +37,7 @@ app.use('/products', auth, productsdaoRouter);
 app.use('/carts', cartsdaoRouter);
 app.use('/users', usersdaoRouter);
 app.use('/session', sessionRouter);
+app.use('/jwt', jwtRouter);
 
 const httpServer = app.listen(8080, () => console.log("Servidor corriendo en el puerto 8080"));
 
