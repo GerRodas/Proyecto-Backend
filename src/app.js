@@ -13,7 +13,7 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
-import passport from 'passport';
+//import passport from 'passport';
 import initializePassport from './config/passport.config.js';
 import jwtRouter from './routes/jwt.router.js';
 
@@ -36,7 +36,7 @@ app.use('/',viewsRouter);
 app.use('/products', auth, productsdaoRouter);
 app.use('/carts', cartsdaoRouter);
 app.use('/users', usersdaoRouter);
-app.use('/session', sessionRouter);
+//app.use('/session', sessionRouter);
 app.use('/jwt', jwtRouter);
 
 const httpServer = app.listen(8080, () => console.log("Servidor corriendo en el puerto 8080"));
@@ -68,15 +68,15 @@ app.use(cookieParser());
 app.get('/setcookie', (req,res)=>{
     res.cookie('cookie', 'Bienvenido a la cookie de Papina').send('cookie seteada')
 });
-
-initializePassport()
-app.use(passport.initialize())
-app.use(passport.session())
-
 function auth(req,res,next){    
     if(req.session?.user) return next() 
     return res.status(401).render('errors/base', {Error: "No autenticado"})
 }
+/*
+
+initializePassport()
+app.use(passport.initialize())
+app.use(passport.session())
 
 app.use(session({
     store: MongoStore.create({
@@ -92,5 +92,5 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }))
-
+*/
 

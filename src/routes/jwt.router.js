@@ -1,11 +1,16 @@
 import { Router } from "express";
 import passport from "passport";
-import { generateToken, authToken } from '../src/utils.js';
+import { generateToken, authToken } from '../utils.js';
 
 const router = Router();
 
+router.get('/register', async (req,res)=>{
+    res.render('registrar',{})
+
+});
+
 const users = []
-router.post("/register", passport.authenticate('register',{failureRedirect: '/errors/base'}), (req, res) => {
+router.post("/register", (req, res) => {
 
     const user = req.body
 
@@ -20,8 +25,12 @@ router.post("/register", passport.authenticate('register',{failureRedirect: '/er
     res.send({status: 'success', access_token})
 });
 
+router.get('/login',async(req,res)=>{
+    res.render('login')
+})
+
 router.post('/login', (req,res) => {
-    const {emial, password} = req.body
+    const {email, password} = req.body
     const user = users.find(u => u.email == email && u.password == password)
     if (!user) return res.status(400).send({status: 'error', error: 'credenciales invalidas'})
 
