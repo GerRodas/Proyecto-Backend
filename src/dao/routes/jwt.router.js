@@ -15,7 +15,7 @@ router.post("/register", (req, res) => {
     const user = req.body
 
     if (users.find(u=> u.email ===user.email)){
-        return res.status(400).send({status: 'error', error: 'user ya existe'})
+        return res.status(400).render('errors/base',{Error: 'usuario ya existe'})
     }
 
     users.push(user)
@@ -32,7 +32,7 @@ router.get('/login',async(req,res)=>{
 router.post('/login', (req,res) => {
     const {email, password} = req.body
     const user = users.find(u => u.email == email && u.password == password)
-    if (!user) return res.status(400).send({status: 'error', error: 'credenciales invalidas'})
+    if (!user) return res.status(400).render('errors/base', {Error: 'credenciales invalidas'})
 
     const access_token = generateToken(user)
     res.send({status: 'success', access_token})

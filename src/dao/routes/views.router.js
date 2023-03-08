@@ -1,8 +1,8 @@
 import { Router } from "express";
 //import { ProductManager } from "../dao/Managers/ProductManager.js";
-import { productModel } from "../dao/models/products.model.js";
-import { messagesModel } from "../dao/models/messages.model.js";
-import { cartModel } from "../dao/models/carts.model.js";
+import { productModel } from "../models/products.model.js";
+import { messagesModel } from "../models/messages.model.js";
+import { cartModel } from "../models/carts.model.js";
 //import { userModel } from "../dao/models/user.model.js";
 
 //const manager = new ProductManager('./db/productos.json');
