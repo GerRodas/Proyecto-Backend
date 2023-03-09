@@ -16,7 +16,7 @@ const transport = nodemailer.createTransport({
 app.get('/mail', async(req,res)=>{
     const result = await transport.sendMail({
         from: 'germanrodas@gmail.com',
-        to: 'germanrodas@gmail.com', //poner el mail del usuario que va a ir
+        to: `${purchaseData.email}`, //poner el mail del usuario que va a ir
         subject: 'Ticket de compra',
         html: `
         <div>
