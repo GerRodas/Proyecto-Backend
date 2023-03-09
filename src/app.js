@@ -1,11 +1,11 @@
 import express from 'express';
 import handlebars from 'express-handlebars';
 import __dirname from '../src/utils.js';
-import viewsRouter from './dao/views.router.js'
+import viewsRouter from './dao/routes/views.router.js'
 import productsdaoRouter from './dao/routes/products.dao.router.js';
 import cartsdaoRouter from './dao/routes/carts.dao.router.js';
 import usersdaoRouter from './dao/routes/users.dao.router.js';
-import sessionRouter from './routes/sessions.router.js';
+import sessionRouter from './dao/routes/sessions.router.js';
 import {Server} from 'socket.io';
 import mongoose from 'mongoose';
 import { messagesModel } from './dao/models/messages.model.js';
@@ -15,7 +15,8 @@ import session from 'express-session';
 import MongoStore from 'connect-mongo';
 //import passport from 'passport';
 import initializePassport from './config/passport.config.js';
-import jwtRouter from './routes/jwt.router.js';
+import jwtRouter from './dao/routes/jwt.router.js';
+import mailRouter from '../src/dao/routes/mail.router.js'
 
 const app = express();
 
@@ -38,6 +39,7 @@ app.use('/carts', cartsdaoRouter);
 app.use('/users', usersdaoRouter);
 //app.use('/session', sessionRouter);
 app.use('/jwt', jwtRouter);
+app.use('/sendmail', mailRouter)
 
 const httpServer = app.listen(8080, () => console.log("Servidor corriendo en el puerto 8080"));
 

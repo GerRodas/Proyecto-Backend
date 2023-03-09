@@ -1,17 +1,21 @@
 import mongoose from "mongoose";
 import mongoosePaginate from 'mongoose-Paginate-v2'
-import { ProductManager } from "../Managers/ProductManager.js";
 
 const ticketCollection = 'tickets'
 
-const ticketSchema = new mongoose.Schema({
-    
-    code: ProductManager.getNextId(),
-    purchase_datetime: String,
+const ticketSchema = new mongoose.Schema({    
+    code: {
+        type: String,
+        unique: true,
+        require: true,        
+    },
+    purchase_datetime: {
+        type: Date,
+        default: Date.now
+    },
     amout: Number,
-    purchaser: String
-    
+    purchaser: String   
     
 })
 ticketSchema.plugin(mongoosePaginate);
-export const productModel = mongoose.model(ticketCollection, ticketSchema)
+export const ticketsModel = mongoose.model(ticketCollection, ticketSchema)

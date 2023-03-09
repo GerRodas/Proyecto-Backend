@@ -1,5 +1,6 @@
 import { Router } from "express";
-import { cartModel } from "../dao/models/carts.model.js";
+import { cartModel } from "../models/carts.model.js";
+import { productModel } from "../models/products.model.js";
 
 const router = Router();
 
@@ -54,5 +55,41 @@ router.delete('/:id', async (req,res)=>{
     res.json({status: "success", cart})
 
 })
+
+router.post('/:cid/purchase', async (req, res) => {
+    try {
+      const cart = await cartModel.findById(req.params.cid);
+      if (!cart) {
+        return res.status(404).json({ error: 'Carrito no encontrado' });
+      }
+  
+      const products = cart.products;
+      const purchases = [];
+      for (const product of products) {
+        const dbProduct = await productModel.findById(product.product_id);
+        if (!dbProduct) {
+          return res.status(404).json({ error: 'Producto no encontrado' });
+        }
+        if (dbProduct.stock < product.quantity) {
+          return res.status(400).json({ error: 'Stock insuficiente para el producto: ' + dbProduct.title });
+        }
+        dbProduct.stock -= product.quantity;
+        await dbProduct.save();
+        purchases.push({
+          product_id: dbProduct._id,
+          quantity: product.quantity
+        });
+      }
+  
+      cart.status = 'Purchased';
+      cart.purchases = purchases;
+      await cart.save();
+  
+      res.json(cart);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'Error al finalizar la compra' });
+    }
+  });
 
 export default router;
