@@ -17,6 +17,7 @@ import MongoStore from 'connect-mongo';
 import initializePassport from './config/passport.config.js';
 import jwtRouter from './dao/routes/jwt.router.js';
 import mailRouter from '../src/dao/routes/mail.router.js'
+import mokedProducts from './dao/routes/mokedProducts.router.js'
 
 const app = express();
 
@@ -40,6 +41,8 @@ app.use('/users', usersdaoRouter);
 //app.use('/session', sessionRouter);
 app.use('/jwt', jwtRouter);
 app.use('/sendmail', mailRouter)
+app.use('/mockingproducts', mokedProducts)
+
 
 const httpServer = app.listen(8080, () => console.log("Servidor corriendo en el puerto 8080"));
 

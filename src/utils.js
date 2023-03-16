@@ -2,6 +2,7 @@ import {fileURLToPath} from 'url';
 import {dirname} from 'path';
 import bcrypt from 'bcrypt';
 import  Jwt  from 'jsonwebtoken';
+import { faker } from '@faker-js/faker';
 
 const PRIVATE_KEY= "Papinaeslamejor"
 
@@ -30,6 +31,25 @@ export const authToken = (req,res,next)=>{
         req.user = credentials.user
         next()
     })
+}
+
+faker.locale = 'es'
+
+export const generateProduct = () =>{
+    let numofProducts = parseInt(faker.random.numeric(1,{bannedDigits:['0']}))
+    let products = [];
+    for (let i = 0; i < numofProducts; i++) {
+        products.push(generateProduct());
+        
+    }
+    return {
+        id: faker.database.mongodbObjectId(),
+        title: faker.commerce.productName(),
+        description: faker.commerce.productAdjective(),
+        thumbnail: faker.image.food(),
+        price: faker.commerce.price(100, 200, 0, '$'),
+        stock: faker.random.numeric(1)
+    }
 }
 
 const __filename = fileURLToPath(import.meta.url);

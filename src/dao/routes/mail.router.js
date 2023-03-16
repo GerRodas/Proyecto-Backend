@@ -13,7 +13,7 @@ const transport = nodemailer.createTransport({
     }
 })
 
-app.get('/mail', async(req,res)=>{
+router.get('/mail', async(req,res)=>{
     const result = await transport.sendMail({
         from: 'germanrodas@gmail.com',
         to: `${purchaseData.email}`, //poner el mail del usuario que va a ir
