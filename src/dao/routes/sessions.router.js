@@ -3,9 +3,9 @@ import mongoose from "mongoose";
 import { productModel } from "../models/products.model.js";
 import { registerModel } from "../models/register.model.js";
 import { userModel } from "../models/user.model.js";
-import { createHash, isValidPassword } from "/Users/German/Desktop/Proyecto-Backend/src/utils.js";
+import { createHash, isValidPassword } from "../../utils.js";
 import passport from "passport";
-import session from "express-session";
+
 
 
 const router = Router();
