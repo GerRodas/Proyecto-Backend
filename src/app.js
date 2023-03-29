@@ -34,7 +34,7 @@ app.set('view engine','handlebars');
 app.use(express.static(__dirname+'/public'));
 
 
-app.use('/',viewsRouter);
+//app.use('/',viewsRouter);
 
 app.use('/products', auth, productsdaoRouter);
 app.use('/carts', cartsdaoRouter);
@@ -44,7 +44,7 @@ app.use('/jwt', jwtRouter);
 app.use('/sendmail', mailRouter)
 app.use('/mockingproducts', mokedProducts)
 
-app.use(addLogger);
+app.use(addLogger)
 
 
 const httpServer = app.listen(8080, () => console.log("Servidor corriendo en el puerto 8080"));
@@ -80,6 +80,11 @@ function auth(req,res,next){
     if(req.session?.user) return next() 
     return res.status(401).render('errors/base', {Error: "No autenticado"})
 }
+
+app.get('/', (req, res)=>{
+    req.logger.warn('Alerta!!!');
+    res.send({message: 'Logger testing!!'})
+})
 /*
 
 initializePassport()
