@@ -107,16 +107,37 @@ router.put('/:id', async(req,res) =>{
     }
 });
 
-router.get('/delete/:id', async(req, res)=>{
+router.delete('/delete/:id', async(req, res)=>{
     try {
-        //const { id: paramId } = req.params;
-        const id = new mongoose.Types.ObjectId(req.params.id);
-
-        const deleted = await productModel.deleteOne({_id:id})
-
-        const deletedProduct = await productModel.deleteOne(id)
-
-        res.redirect('/index')
+        const deleteProduct = async (req, res) => {
+            try {
+              const productId = req.params.id;
+              const product = await productModel.findById(productId);
+          
+              if (!product) {
+                return res.status(404).json({ message: 'Product not found' });
+              }
+          
+              const user = req.user; // usuario autenticado
+          
+              // si el usuario es premium y el producto es de su propiedad, puede eliminarlo
+              if (user.isPremium && product.owner === user.email) {
+                await product.remove();
+                return res.status(200).json({ message: 'Product deleted successfully' });
+              }
+          
+              // si el usuario es admin, puede eliminar cualquier producto
+              if (user.role === 'admin') {
+                await product.remove();
+                return res.status(200).json({ message: 'Product deleted successfully' });
+              }
+          
+              return res.status(403).json({ message: 'You are not authorized to delete this product' });
+            } catch (error) {
+              console.log(error);
+              return res.status(500).json({ message: 'Internal server error' });
+            }
+          };
 
 
     } catch (error) {

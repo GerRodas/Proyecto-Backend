@@ -122,4 +122,51 @@ router.delete('/:id', async(req, res)=>{
 
 })
 
+router.post('/forgot-password', async (req, res) => {
+    try {
+      const { email } = req.body;
+      const user = await userModel.findOne({ email });
+      if (!user) {
+        return res.status(404).json({ error: 'El correo electrónico no está registrado.' });
+      }
+      const token = crypto.randomBytes(32).toString('hex');
+      user.resetPasswordToken = token;
+      user.resetPasswordExpires = Date.now() + 3600000; // 1 hora
+      await user.save();
+      const mailOptions = {
+        to: email,
+        subject: 'Recuperación de contraseña',
+        text: `Haga clic en el siguiente enlace para restablecer su contraseña: ${process.env.CLIENT_URL}/reset-password/${token}`,
+        html: `<p>Haga clic en el siguiente enlace para restablecer su contraseña: <a href="${process.env.CLIENT_URL}/reset-password/${token}">Restablecer contraseña</a></p>`
+      };
+      await transporter.sendMail(mailOptions);
+      return res.json({ message: 'Se ha enviado un correo electrónico con las instrucciones para restablecer su contraseña.' });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Ocurrió un error al enviar el correo electrónico.' });
+    }
+  });
+
+  router.post('/reset-password/:token', async (req, res) => {
+    try {
+      const { token } = req.params;
+      const { password, confirmPassword } = req.body;
+      const user = await userModel.findOne({ resetPasswordToken: token, resetPasswordExpires: { $gt: Date.now() } });
+      if (!user) {
+        return res.status(400).json({ error: 'El enlace para restablecer la contraseña es inválido o ha expirado.' });
+      }
+      if (password === user.password) {
+        return res.status(400).json({ error: 'La nueva contraseña no puede ser la misma que la actual.' });
+      }
+      user.password = password;
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpires = undefined;
+      await user.save();
+      return res.json({ message: 'Se ha restablecido su contraseña exitosamente.' });
+    } catch (err) {
+      console.error(err);
+      return res.status(500).json({ error: 'Ocurrió un error al restablecer la contraseña.' });
+    }
+  });
+
 export default router;

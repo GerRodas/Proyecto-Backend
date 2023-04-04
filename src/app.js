@@ -85,25 +85,4 @@ app.get('/', (req, res)=>{
     req.logger.warn('Alerta!!!');
     res.send({message: 'Logger testing!!'})
 })
-/*
-
-initializePassport()
-app.use(passport.initialize())
-app.use(passport.session())
-
-app.use(session({
-    store: MongoStore.create({
-        mongoUrl: dataBaseOnLine,
-        dbName: 'sessions',
-        mongoOptions: {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        },
-        ttl: 3000
-    }),
-    secret: 'milugarsecreto',
-    resave: true,
-    saveUninitialized: true
-}))
-*/
 
