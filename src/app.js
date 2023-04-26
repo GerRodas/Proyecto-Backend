@@ -82,3 +82,7 @@ app.get('/', (req, res)=>{
     req.logger.warn('Alerta!!!');
     res.send({message: 'Logger testing!!'})
 })
+<<<<<<< HEAD
+=======
+
+>>>>>>> 034350e421ce6e19725f1602b220860b3dd941c9

@@ -10,6 +10,9 @@ const productSchema = new mongoose.Schema({
     price: Number,
     code: String,
     stock: Number,
+    owner: {
+        type: String
+      }
     
 })
 productSchema.plugin(mongoosePaginate);

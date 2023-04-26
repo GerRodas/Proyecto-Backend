@@ -21,8 +21,11 @@ const userSchema = new mongoose.Schema({
           }
         }
       ],
-    role: String
-});
+    role: String,
+    isPremium: {
+      type: Boolean,
+      default: false
+}});
 
 userSchema.plugin(moongosePaginate);
 export const userModel = mongoose.model(userCollection, userSchema)
