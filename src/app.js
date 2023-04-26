@@ -13,8 +13,6 @@ import bodyParser from 'body-parser';
 import cookieParser from 'cookie-parser';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
-//import passport from 'passport';
-import initializePassport from './config/passport.config.js';
 import jwtRouter from './dao/routes/jwt.router.js';
 import mailRouter from '../src/dao/routes/mail.router.js'
 import mokedProducts from './dao/routes/mokedProducts.router.js'
@@ -39,7 +37,6 @@ app.use(express.static(__dirname+'/public'));
 app.use('/products', auth, productsdaoRouter);
 app.use('/carts', cartsdaoRouter);
 app.use('/users', usersdaoRouter);
-//app.use('/session', sessionRouter);
 app.use('/jwt', jwtRouter);
 app.use('/sendmail', mailRouter)
 app.use('/mockingproducts', mokedProducts)
@@ -85,25 +82,3 @@ app.get('/', (req, res)=>{
     req.logger.warn('Alerta!!!');
     res.send({message: 'Logger testing!!'})
 })
-/*
-
-initializePassport()
-app.use(passport.initialize())
-app.use(passport.session())
-
-app.use(session({
-    store: MongoStore.create({
-        mongoUrl: dataBaseOnLine,
-        dbName: 'sessions',
-        mongoOptions: {
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        },
-        ttl: 3000
-    }),
-    secret: 'milugarsecreto',
-    resave: true,
-    saveUninitialized: true
-}))
-*/
-

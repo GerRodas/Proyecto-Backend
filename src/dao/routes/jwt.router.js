@@ -1,5 +1,4 @@
 import { Router } from "express";
-import passport from "passport";
 import { generateToken, authToken } from "../../utils.js";
 
 const router = Router();
@@ -22,7 +21,7 @@ router.post("/register", (req, res) => {
 
     const access_token = generateToken(user)
 
-    res.send({status: 'success', access_token})
+    res.render('login')
 });
 
 router.get('/login',async(req,res)=>{
@@ -35,7 +34,7 @@ router.post('/login', (req,res) => {
     if (!user) return res.status(400).render('errors/base', {Error: 'credenciales invalidas'})
 
     const access_token = generateToken(user)
-    res.send({status: 'success', access_token})
+    res.render('index')
 
 })
 
